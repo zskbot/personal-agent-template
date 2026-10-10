@@ -1,0 +1,40 @@
+databases:
+  - name: zskbot-agent-db
+    databaseName: zskbot_agent
+    user: zskbot_agent
+    plan: free
+    region: singapore
+    postgresMajorVersion: 18
+
+services:
+  - type: web
+    name: zskbot-personal-agent-prod
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    buildCommand: pnpm install --no-frozen-lockfile && pnpm build
+    startCommand: pnpm start
+    healthCheckPath: /login
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "24.14.0"
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: zskbot-agent-db
+          property: connectionString
+      - key: POSTGRES_URL
+        fromDatabase:
+          name: zskbot-agent-db
+          property: connectionString
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      - key: INTERNAL_API_SECRET
+        generateValue: true
+      - key: BETTER_AUTH_URL
+        value: https://zskbot-personal-agent-prod.onrender.com
+      - key: NUXT_PUBLIC_SITE_URL
+        value: https://zskbot-personal-agent-prod.onrender.com
