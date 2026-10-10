@@ -11,7 +11,6 @@ export default defineNuxtConfig({
     viewTransition: true,
   },
   routeRules: {
-    "/login": { prerender: true },
     "/": { ssr: true, headers: privateNoStore },
     "/chat/**": { ssr: true, headers: privateNoStore },
     "/settings/**": { ssr: true, headers: privateNoStore },
@@ -41,7 +40,9 @@ export default defineNuxtConfig({
   nitro: {
     compressPublicAssets: true,
     prerender: {
-      routes: ["/login"],
+      // Authentication pages depend on the database at runtime; do not
+      // execute them during a database-less production build.
+      routes: [],
       crawlLinks: false,
     },
   },
