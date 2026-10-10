@@ -30,10 +30,10 @@ export default defineNuxtConfig({
   },
   vite: {
     optimizeDeps: {
-      // Client code imports `ai` for its UI part helpers. `ai` is already ESM,
+      // Client code imports "ai" for its UI part helpers. "ai" is already ESM,
       // so Vite would serve it unbundled — and its @ai-sdk/gateway dependency
       // imports @vercel/oidc, whose browser build is CommonJS and cannot
-      // provide named exports to the browser. Pre-bundling `ai` converts the
+      // provide named exports to the browser. Pre-bundling "ai" converts the
       // whole chain to ESM.
       include: ["ai"],
     },
@@ -70,18 +70,20 @@ export default defineNuxtConfig({
 
   fonts: {
     families: [
-      { name: 'Geist', weights: ['100 900'], global: true },
-      { name: 'Geist Mono', weights: ['100 900'], global: true },
+      { name: "Geist", weights: ["100 900"], global: true },
+      { name: "Geist Mono", weights: ["100 900"], global: true },
     ],
   },
 
   hub: {
-    // Pinned rather than auto-detected: without a URL the module falls back to
-    // pglite, whose WASM payload does not survive eve's agent bundling. Pinning
-    // turns that into a build-time error naming the missing DATABASE_URL.
+    // Do not run database migrations during the build. Render builds happen
+    // without production database credentials; migrations must be run against
+    // the real database separately after DATABASE_URL is configured.
     db: {
       dialect: "postgresql",
       driver: "postgres-js",
+      applyMigrationsDuringBuild: false,
+      applyMigrationsDuringDev: false,
     },
   },
   runtimeConfig: {
